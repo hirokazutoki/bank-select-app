@@ -84,7 +84,7 @@ function BankComboboxPopover({
                 </PopoverTrigger>
                 <PopoverContent className="p-0" side="bottom" align="start">
                     <Command>
-                        <CommandInput placeholder="銀行名を入力してください" />
+                        <CommandInput placeholder="金融機関名を入力してください" />
                         <CommandList>
                             <CommandEmpty>該当する金融機関がありません。</CommandEmpty>
                             <CommandGroup>
@@ -128,9 +128,9 @@ function BranchComboboxPopover({
                         {selectedBranch ? <>{selectedBranch.branchName} <span className="text-muted-foreground text-xs">（{selectedBranch.branchCode}）</span></> : <>未入力</>}
                     </Button>
                 </PopoverTrigger>
-                <PopoverContent className="p-0 w-[400px]" side="bottom" align="start">
+                <PopoverContent className="p-0 w-[300px]" side="bottom" align="start">
                     <Command>
-                        <CommandInput placeholder="支店名を入力してください（ひらがな・カタカナ）" />
+                        <CommandInput placeholder="支店名・支店コードを入力してください" />
                         <CommandList>
                             <CommandEmpty>該当する支店がありません。</CommandEmpty>
                             <CommandGroup>
