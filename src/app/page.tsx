@@ -17,33 +17,27 @@ import {
 } from "@/components/ui/popover"
 type Bank = {
     bankName: string
-    label: string
     code: string
 }
 const banks: Bank[] = [
     {
-        bankName: "backlog",
-        label: "みずほ",
+        bankName: "みずほ",
         code: "0001",
     },
     {
-        bankName: "todo",
-        label: "三菱ＵＦＪ",
+        bankName: "三菱ＵＦＪ",
         code: "0005",
     },
     {
-        bankName: "in progress",
-        label: "三井住友",
+        bankName: "三井住友",
         code: "0009",
     },
     {
-        bankName: "done",
-        label: "りそな",
+        bankName: "りそな",
         code: "0010",
     },
     {
-        bankName: "canceled",
-        label: "埼玉りそな",
+        bankName: "埼玉りそな",
         code: "0017",
     },
 ]
@@ -79,7 +73,7 @@ function BankComboboxPopover({
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <Button variant="outline" className="w-[300px] justify-start">
-                        {selectedBank ? <>{selectedBank.label} <span className="text-muted-foreground text-xs">（{selectedBank.code}）</span></> : <>未入力</>}
+                        {selectedBank ? <>{selectedBank.bankName} <span className="text-muted-foreground text-xs">（{selectedBank.code}）</span></> : <>未入力</>}
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent className="p-0" side="bottom" align="start">
@@ -91,15 +85,15 @@ function BankComboboxPopover({
                                 {banks.map((status) => (
                                     <CommandItem
                                         key={status.code}
-                                        value={status.code}
+                                        value={status.bankName}
                                         onSelect={(value) => {
                                             setSelectedBank(
-                                                banks.find((s) => s.code === value) || null
+                                                banks.find((s) => s.bankName === value) || null
                                             )
                                             setOpen(false)
                                         }}
                                     >
-                                        {status.label} <span className="text-muted-foreground text-xs">（ {status.code} ）</span>
+                                        {status.bankName} <span className="text-muted-foreground text-xs">（ {status.code} ）</span>
                                     </CommandItem>
                                 ))}
                             </CommandGroup>
@@ -165,7 +159,7 @@ export default function Home() {
         if (selectedBank) {
             const json = JSON.stringify(
                 {
-                    bank_nme: selectedBank.label,
+                    bank_name: selectedBank.bankName,
                     bank_code: selectedBank.code,
                     branch_code: selectedBranch?.branchCode,
                     sub_branch_code: selectedBranch?.subBranchCode,
