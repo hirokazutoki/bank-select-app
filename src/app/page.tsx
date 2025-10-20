@@ -15,33 +15,14 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
+type RawBank = {
+    bank_name: string
+    bank_code: string
+}
 type Bank = {
     bankName: string
-    code: string
+    bankCode: string
 }
-const banks: Bank[] = [
-    {
-        bankName: "みずほ",
-        code: "0001",
-    },
-    {
-        bankName: "三菱ＵＦＪ",
-        code: "0005",
-    },
-    {
-        bankName: "三井住友",
-        code: "0009",
-    },
-    {
-        bankName: "りそな",
-        code: "0010",
-    },
-    {
-        bankName: "埼玉りそな",
-        code: "0017",
-    },
-]
-
 type Branch = {
     branchName: string
     branchNameKana: string
@@ -66,6 +47,38 @@ function BankComboboxPopover({
     setSelectedBank: React.Dispatch<React.SetStateAction<Bank | null>>
 }) {
     const [open, setOpen] = React.useState(false)
+    const [banks, setBanks] = React.useState<Bank[]>([]);
+    const [query, setQuery] = React.useState("");
+
+    // 入力のたびに API 叩く（実運用では debounce 推奨）
+    React.useEffect(() => {
+        const fetchBanks = async () => {
+            if (!query) {
+                setBanks([]);
+                return;
+            }
+
+            try {
+                // TODO: 本来は、use serverで行うべき
+                const res = await fetch(
+                    `${process.env.NEXT_PUBLIC_BANK_API_URL}?query=${encodeURIComponent(query)}`
+                );
+                const data : RawBank[]|[] = await res.json();
+
+                // snake_case → camelCase に変換
+                const banks : Bank[] = data.map((b) => ({
+                    bankName: b.bank_name,
+                    bankCode: b.bank_code,
+                }));
+
+                setBanks(banks);
+            } catch (err) {
+                console.error("銀行データの取得に失敗しました", err);
+            }
+        };
+
+        fetchBanks();
+    }, [query]);
 
     return (
         <div className="flex flex-col space-y-2">
@@ -73,18 +86,22 @@ function BankComboboxPopover({
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <Button variant="outline" className="w-[300px] justify-start">
-                        {selectedBank ? <>{selectedBank.bankName} <span className="text-muted-foreground text-xs">（{selectedBank.code}）</span></> : <>未入力</>}
+                        {selectedBank ? <>{selectedBank.bankName} <span className="text-muted-foreground text-xs">（{selectedBank.bankCode}）</span></> : <>未入力</>}
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent className="p-0" side="bottom" align="start">
                     <Command>
-                        <CommandInput placeholder="金融機関名を入力してください" />
+                        <CommandInput
+                            placeholder="金融機関名を入力してください"
+                            value={query}
+                            onValueChange={setQuery}
+                        />
                         <CommandList>
                             <CommandEmpty>該当する金融機関がありません。</CommandEmpty>
                             <CommandGroup>
                                 {banks.map((status) => (
                                     <CommandItem
-                                        key={status.code}
+                                        key={status.bankCode}
                                         value={status.bankName}
                                         onSelect={(value) => {
                                             setSelectedBank(
@@ -93,7 +110,7 @@ function BankComboboxPopover({
                                             setOpen(false)
                                         }}
                                     >
-                                        {status.bankName} <span className="text-muted-foreground text-xs">（ {status.code} ）</span>
+                                        {status.bankName} <span className="text-muted-foreground text-xs">（ {status.bankCode} ）</span>
                                     </CommandItem>
                                 ))}
                             </CommandGroup>
@@ -160,7 +177,7 @@ export default function Home() {
             const json = JSON.stringify(
                 {
                     bank_name: selectedBank.bankName,
-                    bank_code: selectedBank.code,
+                    bank_code: selectedBank.bankCode,
                     branch_code: selectedBranch?.branchCode,
                     sub_branch_code: selectedBranch?.subBranchCode,
                     branch_name: selectedBranch?.branchName,
