@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ebank Client Demo",
+  title: process.env.APP_NAME ?? "BANK SELECT APP",
   description: "",
 };
 
