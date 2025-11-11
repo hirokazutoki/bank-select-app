@@ -19,22 +19,22 @@ type RawBank = {
     bank_name: string
     bank_code: string
 }
+type RawBranch = {
+    branch_name: string
+    branch_code: string
+}
 type Bank = {
     bankName: string
     bankCode: string
 }
 type Branch = {
     branchName: string
-    branchNameKana: string
     branchCode: string
-    subBranchCode: string
 }
 const branches: Branch[] = [
     {
         branchName: "インターネット",
-        branchNameKana: "インタ-ネツト",
         branchCode: "101",
-        subBranchCode: "1",
     },
 ]
 
@@ -61,7 +61,14 @@ function BankComboboxPopover({
             try {
                 // TODO: 本来は、use serverで行うべき
                 const res = await fetch(
-                    `${process.env.NEXT_PUBLIC_BANK_API_URL}?query=${encodeURIComponent(query)}`
+                    `${process.env.NEXT_PUBLIC_BANK_API_URL}?bank_name=${encodeURIComponent(query)}`,
+                    {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-API-KEY": `${process.env.NEXT_PUBLIC_BANK_API_KEY}`
+                        },
+                    }
                 );
                 const data : RawBank[]|[] = await res.json();
 
@@ -122,13 +129,53 @@ function BankComboboxPopover({
     )
 }
 function BranchComboboxPopover({
-  selectedBranch,
-  setSelectedBranch,
+   selectedBranch,
+   setSelectedBranch,
+   selectedBank,
 }: {
-  selectedBranch: Branch | null
-  setSelectedBranch: React.Dispatch<React.SetStateAction<Branch | null>>
+    selectedBranch: Branch | null
+    setSelectedBranch: React.Dispatch<React.SetStateAction<Branch | null>>
+    selectedBank: Bank | null
 }) {
     const [open, setOpen] = React.useState(false)
+    const [branches, setBranches] = React.useState<Branch[]>([])
+    const [query, setQuery] = React.useState("")
+
+    React.useEffect(() => {
+        const fetchBranches = async () => {
+            if (!query || !selectedBank) {
+                setBranches([])
+                return
+            }
+
+            try {
+                const res = await fetch(
+                    `${process.env.NEXT_PUBLIC_BANK_API_URL}/v1/banks/${selectedBank.bankCode}/branches?branch_name=${encodeURIComponent(query)}`,
+                    {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-API-KEY": `${process.env.NEXT_PUBLIC_BANK_API_KEY}`
+                        },
+                    }
+                );
+
+                const data: RawBranch[] | [] = await res.json()
+
+                const branches: Branch[] = data.map((b) => ({
+                    branchName: b.branch_name,
+                    branchCode: b.branch_code,
+                }))
+
+                setBranches(branches)
+            } catch (err) {
+                console.error("支店データの取得に失敗しました", err)
+            }
+        }
+
+        fetchBranches()
+    }, [query, selectedBank])
+
 
     return (
         <div className="flex flex-col space-y-2">
@@ -141,7 +188,11 @@ function BranchComboboxPopover({
                 </PopoverTrigger>
                 <PopoverContent className="p-0 w-[300px]" side="bottom" align="start">
                     <Command>
-                        <CommandInput placeholder="支店名・支店コードを入力してください" />
+                        <CommandInput
+                            placeholder="支店名・支店コードを入力してください"
+                            value={query}
+                            onValueChange={setQuery}
+                        />
                         <CommandList>
                             <CommandEmpty>該当する支店がありません。</CommandEmpty>
                             <CommandGroup>
@@ -172,6 +223,11 @@ export default function Home() {
     const [selectedBank, setSelectedBank] = React.useState<Bank | null>(null)
     const [selectedBranch, setSelectedBranch] = React.useState<Branch | null>(null)
 
+    // 銀行変更時に支店をクリア
+    React.useEffect(() => {
+        setSelectedBranch(null)
+    }, [selectedBank])
+
     async function handleCheck() {
         if (selectedBank) {
             const json = JSON.stringify(
@@ -179,7 +235,6 @@ export default function Home() {
                     bank_name: selectedBank.bankName,
                     bank_code: selectedBank.bankCode,
                     branch_code: selectedBranch?.branchCode,
-                    sub_branch_code: selectedBranch?.subBranchCode,
                     branch_name: selectedBranch?.branchName,
                 }, null, 2)
             alert(json)
@@ -198,6 +253,7 @@ export default function Home() {
                 <BranchComboboxPopover
                     selectedBranch={selectedBranch}
                     setSelectedBranch={setSelectedBranch}
+                    selectedBank={selectedBank}
                 />
                 <button
                     className="btn btn-blue border px-4 py-2 rounded w-full"
