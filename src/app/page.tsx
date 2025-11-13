@@ -59,9 +59,25 @@ function BankComboboxPopover({
             }
 
             try {
+                // 文字数や文字種別によって、銀行コード・SWIFTコードになりうるかをチェック
+                const isCodeQuery = /^[0-9０-９]{1,4}$/.test(query);
+                const isEightChar = /^[A-Za-z0-9Ａ-Ｚａ-ｚ０-９]{8}$/.test(query);
+
+                // paramKey / paramValue を決める
+                const paramValue = encodeURIComponent(query);
+                let queryParams;
+
+                if (isCodeQuery) {
+                    queryParams = `bank_code=${paramValue}`;
+                } else if (isEightChar) {
+                    queryParams = `swift_code=${paramValue}&bank_name=${paramValue}`;
+                } else {
+                    queryParams = `bank_name=${paramValue}`;
+                }
+
                 // TODO: 本来は、use serverで行うべき
                 const res = await fetch(
-                    `${process.env.NEXT_PUBLIC_BANK_API_URL}?bank_name=${encodeURIComponent(query)}`,
+                    `${process.env.NEXT_PUBLIC_BANK_API_URL}?${queryParams}`,
                     {
                         method: "GET",
                         headers: {
@@ -148,9 +164,22 @@ function BranchComboboxPopover({
                 return
             }
 
+            // 文字数や文字種別によって、支店コードになりうるかをチェック
+            const isBranchCodeQuery = /^[0-9０-９]{1,3}$/.test(query);
+
+            // paramKey / paramValue を決める
+            const paramValue = encodeURIComponent(query);
+            let queryParams;
+
+            if (isBranchCodeQuery) {
+                queryParams = `branch_code=${paramValue}`;
+            } else {
+                queryParams = `bank_name=${paramValue}`;
+            }
+
             try {
                 const res = await fetch(
-                    `${process.env.NEXT_PUBLIC_BANK_API_URL}/v1/banks/${selectedBank.bankCode}/branches?branch_name=${encodeURIComponent(query)}`,
+                    `${process.env.NEXT_PUBLIC_BANK_API_URL}/${selectedBank.bankCode}/branches?${queryParams}`,
                     {
                         method: "GET",
                         headers: {
