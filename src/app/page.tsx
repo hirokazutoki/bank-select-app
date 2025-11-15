@@ -16,28 +16,29 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 type RawBank = {
+    swift_code: string
     bank_name: string
     bank_code: string
 }
 type RawBranch = {
     branch_name: string
     branch_code: string
+    address: string
+    post_code: string
+    sort_order: string
 }
 type Bank = {
+    swiftCode: string
     bankName: string
     bankCode: string
 }
 type Branch = {
     branchName: string
     branchCode: string
+    postCode: string
+    address: string
+    sortOrder: string
 }
-const branches: Branch[] = [
-    {
-        branchName: "インターネット",
-        branchCode: "101",
-    },
-]
-
 
 function BankComboboxPopover({
      selectedBank,
@@ -90,6 +91,7 @@ function BankComboboxPopover({
 
                 // snake_case → camelCase に変換
                 const banks : Bank[] = data.map((b) => ({
+                    swiftCode: b.swift_code,
                     bankName: b.bank_name,
                     bankCode: b.bank_code,
                 }));
@@ -113,7 +115,7 @@ function BankComboboxPopover({
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent className="p-0" side="bottom" align="start">
-                    <Command>
+                    <Command shouldFilter={false}>
                         <CommandInput
                             placeholder="金融機関名を入力してください"
                             value={query}
@@ -174,7 +176,7 @@ function BranchComboboxPopover({
             if (isBranchCodeQuery) {
                 queryParams = `branch_code=${paramValue}`;
             } else {
-                queryParams = `bank_name=${paramValue}`;
+                queryParams = `branch_name=${paramValue}`;
             }
 
             try {
@@ -194,6 +196,9 @@ function BranchComboboxPopover({
                 const branches: Branch[] = data.map((b) => ({
                     branchName: b.branch_name,
                     branchCode: b.branch_code,
+                    postCode: b.post_code,
+                    address: b.address,
+                    sortOrder: b.sort_order,
                 }))
 
                 setBranches(branches)
@@ -216,7 +221,7 @@ function BranchComboboxPopover({
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent className="p-0 w-[300px]" side="bottom" align="start">
-                    <Command>
+                    <Command shouldFilter={false}>
                         <CommandInput
                             placeholder="支店名・支店コードを入力してください"
                             value={query}
@@ -227,7 +232,7 @@ function BranchComboboxPopover({
                             <CommandGroup>
                                 {branches.map((branch) => (
                                     <CommandItem
-                                        key={branch.branchCode}
+                                        key={branch.branchCode + "-" + branch.sortOrder}
                                         value={branch.branchCode}
                                         onSelect={(value) => {
                                             setSelectedBranch(
@@ -258,17 +263,20 @@ export default function Home() {
     }, [selectedBank])
 
     async function handleCheck() {
-        if (selectedBank) {
+        if (selectedBank && selectedBranch) {
             const json = JSON.stringify(
                 {
                     bank_name: selectedBank.bankName,
                     bank_code: selectedBank.bankCode,
-                    branch_code: selectedBranch?.branchCode,
-                    branch_name: selectedBranch?.branchName,
+                    swift_code: selectedBank.swiftCode,
+                    branch_code: selectedBranch.branchCode,
+                    branch_name: selectedBranch.branchName,
+                    post_code: selectedBranch.postCode,
+                    address: selectedBranch.address,
                 }, null, 2)
             alert(json)
         } else {
-            alert("銀行が選択されていません")
+            alert("銀行と支店が選択されていません")
         }
     }
 
