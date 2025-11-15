@@ -76,18 +76,8 @@ function BankComboboxPopover({
                     queryParams = `bank_name=${paramValue}`;
                 }
 
-                // TODO: 本来は、use serverで行うべき
-                const res = await fetch(
-                    `${process.env.NEXT_PUBLIC_BANK_API_URL}?${queryParams}`,
-                    {
-                        method: "GET",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-API-KEY": `${process.env.NEXT_PUBLIC_BANK_API_KEY}`
-                        },
-                    }
-                );
-                const data : RawBank[]|[] = await res.json();
+                const res = await fetch(`/api/banks?${queryParams}`);
+                const data : RawBank[] = await res.json();
 
                 // snake_case → camelCase に変換
                 const banks : Bank[] = data.map((b) => ({
@@ -181,17 +171,10 @@ function BranchComboboxPopover({
 
             try {
                 const res = await fetch(
-                    `${process.env.NEXT_PUBLIC_BANK_API_URL}/${selectedBank.bankCode}/branches?${queryParams}`,
-                    {
-                        method: "GET",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-API-KEY": `${process.env.NEXT_PUBLIC_BANK_API_KEY}`
-                        },
-                    }
+                    `/api/banks/${selectedBank.bankCode}/branches?${queryParams}`
                 );
 
-                const data: RawBranch[] | [] = await res.json()
+                const data: RawBranch[] | [] = await res.json();
 
                 const branches: Branch[] = data.map((b) => ({
                     branchName: b.branch_name,
