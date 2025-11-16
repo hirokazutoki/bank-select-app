@@ -1,6 +1,8 @@
 "use client"
 
 import * as React from "react"
+import { BankComboboxPopover } from "@/components/BankComboboxPopover";
+import { Bank } from "@/types/bank";
 import { Button } from "@/components/ui/button"
 import {
     Command,
@@ -15,22 +17,12 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
-type RawBank = {
-    swift_code: string
-    bank_name: string
-    bank_code: string
-}
 type RawBranch = {
     branch_name: string
     branch_code: string
     address: string
     post_code: string
     sort_order: string
-}
-type Bank = {
-    swiftCode: string
-    bankName: string
-    bankCode: string
 }
 type Branch = {
     branchName: string
@@ -40,102 +32,6 @@ type Branch = {
     sortOrder: string
 }
 
-function BankComboboxPopover({
-     selectedBank,
-     setSelectedBank,
- }: {
-    selectedBank: Bank | null
-    setSelectedBank: React.Dispatch<React.SetStateAction<Bank | null>>
-}) {
-    const [open, setOpen] = React.useState(false)
-    const [banks, setBanks] = React.useState<Bank[]>([]);
-    const [query, setQuery] = React.useState("");
-
-    // 入力のたびに API 叩く（実運用では debounce 推奨）
-    React.useEffect(() => {
-        const fetchBanks = async () => {
-            if (!query) {
-                setBanks([]);
-                return;
-            }
-
-            try {
-                // 文字数や文字種別によって、銀行コード・SWIFTコードになりうるかをチェック
-                const isCodeQuery = /^[0-9０-９]{1,4}$/.test(query);
-                const isEightChar = /^[A-Za-z0-9Ａ-Ｚａ-ｚ０-９]{8}$/.test(query);
-
-                // paramKey / paramValue を決める
-                const paramValue = encodeURIComponent(query);
-                let queryParams;
-
-                if (isCodeQuery) {
-                    queryParams = `bank_code=${paramValue}`;
-                } else if (isEightChar) {
-                    queryParams = `swift_code=${paramValue}&bank_name=${paramValue}`;
-                } else {
-                    queryParams = `bank_name=${paramValue}`;
-                }
-
-                const res = await fetch(`/api/banks?${queryParams}`);
-                const data : RawBank[] = await res.json();
-
-                // snake_case → camelCase に変換
-                const banks : Bank[] = data.map((b) => ({
-                    swiftCode: b.swift_code,
-                    bankName: b.bank_name,
-                    bankCode: b.bank_code,
-                }));
-
-                setBanks(banks);
-            } catch (err) {
-                console.error("銀行データの取得に失敗しました", err);
-            }
-        };
-
-        fetchBanks();
-    }, [query]);
-
-    return (
-        <div className="flex flex-col space-y-2">
-            <p className="text-muted-foreground text-sm">金融機関名</p>
-            <Popover open={open} onOpenChange={setOpen}>
-                <PopoverTrigger asChild>
-                    <Button variant="outline" className="w-[300px] justify-start">
-                        {selectedBank ? <>{selectedBank.bankName} <span className="text-muted-foreground text-xs">（{selectedBank.bankCode}）</span></> : <>未入力</>}
-                    </Button>
-                </PopoverTrigger>
-                <PopoverContent className="p-0" side="bottom" align="start">
-                    <Command shouldFilter={false}>
-                        <CommandInput
-                            placeholder="金融機関名を入力してください"
-                            value={query}
-                            onValueChange={setQuery}
-                        />
-                        <CommandList>
-                            <CommandEmpty>該当する金融機関がありません。</CommandEmpty>
-                            <CommandGroup>
-                                {banks.map((status) => (
-                                    <CommandItem
-                                        key={status.bankCode}
-                                        value={status.bankName}
-                                        onSelect={(value) => {
-                                            setSelectedBank(
-                                                banks.find((s) => s.bankName === value) || null
-                                            )
-                                            setOpen(false)
-                                        }}
-                                    >
-                                        {status.bankName} <span className="text-muted-foreground text-xs">（ {status.bankCode} ）</span>
-                                    </CommandItem>
-                                ))}
-                            </CommandGroup>
-                        </CommandList>
-                    </Command>
-                </PopoverContent>
-            </Popover>
-        </div>
-    )
-}
 function BranchComboboxPopover({
    selectedBranch,
    setSelectedBranch,
