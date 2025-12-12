@@ -61,7 +61,7 @@ export default function Home() {
                     </button>
 
                     <button
-                        className="btn btn-white border px-4 py-1 rounded w-full mt-0"
+                        className="btn btn-white text-gray-600 border px-4 py-1 rounded w-full mt-0"
                         onClick={handleReset}
                     >
                         リセット
