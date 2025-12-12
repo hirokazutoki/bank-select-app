@@ -1,4 +1,5 @@
 import { RawBranch, Branch } from "@/types/branch";
+import { incrementApiCall } from "@/lib/apiCounter";
 
 export async function fetchBranches(bankCode: string, query: string): Promise<Branch[]> {
     if (!query?.trim() || !bankCode?.trim()) return []
@@ -14,6 +15,7 @@ export async function fetchBranches(bankCode: string, query: string): Promise<Br
         : `branch_name=${paramValue}`;
 
     try {
+        incrementApiCall();
         const res = await fetch(
             `/api/banks/${bankCode}/branches?${queryParams}`, { cache: "no-store" }
         );

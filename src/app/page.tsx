@@ -6,15 +6,24 @@ import { BankComboboxPopover } from "@/components/BankComboboxPopover";
 import { BranchComboboxPopover } from "@/components/BranchComboboxPopover";
 import { Bank } from "@/types/bank";
 import { Branch } from "@/types/branch";
+import { subscribeApiCallCount, getApiCallCount } from "@/lib/apiCounter";
 
 export default function Home() {
     const [selectedBank, setSelectedBank] = React.useState<Bank | null>(null)
     const [selectedBranch, setSelectedBranch] = React.useState<Branch | null>(null)
+    const [apiCallCount, setApiCallCount] = React.useState(0);
 
     // 銀行変更時に支店をクリア
     React.useEffect(() => {
         setSelectedBranch(null)
     }, [selectedBank])
+
+    React.useEffect(() => {
+        const unsubscribe = subscribeApiCallCount(() => {
+            setApiCallCount(getApiCallCount());
+        });
+        return () => unsubscribe();
+    }, []);
 
     async function handleCheck() {
         if (selectedBank && selectedBranch) {
@@ -66,6 +75,8 @@ export default function Home() {
                     >
                         リセット
                     </button>
+
+                    <div>API Call Count : {apiCallCount}</div>
                 </main>
             </div>
         </>

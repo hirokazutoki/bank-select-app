@@ -1,4 +1,5 @@
 import { RawBank, Bank } from "@/types/bank";
+import {incrementApiCall} from "@/lib/apiCounter";
 
 export async function fetchBanks(query: string): Promise<Bank[]> {
     if (!query?.trim()) return [];
@@ -14,6 +15,7 @@ export async function fetchBanks(query: string): Promise<Bank[]> {
     else queryParams = `bank_name=${paramValue}`;
 
     try {
+        incrementApiCall();
         const res = await fetch(`/api/banks?${queryParams}`, { cache: "no-store" });
         const data: RawBank[] = await res.json();
 
