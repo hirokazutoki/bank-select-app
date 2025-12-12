@@ -30,6 +30,14 @@ export function BranchComboboxPopover({
     // 銀行が選ばれていない → 支店入力を無効化する
     const disabled = !selectedBank;
 
+    // 銀行変更時に、支店の検索文字列を削除する
+    useEffect(() => {
+        setQuery("");
+        setDebouncedQuery("");
+        setBranches([]);
+        setSelectedBranch(null);
+    }, [selectedBank, setSelectedBranch]);
+
     // debounce: query が変わったら DEBOUNCE_MS 待って debouncedQuery に反映
     useEffect(() => {
         const id = setTimeout(() => {
