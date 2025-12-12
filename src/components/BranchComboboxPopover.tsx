@@ -49,7 +49,7 @@ export function BranchComboboxPopover({
                     <Button
                         variant="outline"
                         disabled={disabled}
-                        className="w-[300px] justify-start"
+                        className="w-[400px] justify-start"
                     >
                         {selectedBranch ? (
                             <>
@@ -64,10 +64,10 @@ export function BranchComboboxPopover({
                     </Button>
                 </PopoverTrigger>
 
-                <PopoverContent className="p-0 w-[300px]" side="bottom" align="start">
+                <PopoverContent className="p-0 w-[400px]" side="bottom" align="start">
                     <Command shouldFilter={false}>
                         <CommandInput
-                            placeholder="支店名・支店コードを入力"
+                            placeholder="支店名・支店コードのいずれかを入力"
                             value={query}
                             onValueChange={setQuery}
                         />

@@ -34,7 +34,7 @@ export function BankComboboxPopover({
             <p className="text-muted-foreground text-sm">金融機関名</p>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
-                    <Button variant="outline" className="w-[300px] justify-start">
+                    <Button variant="outline" className="w-[400px] justify-start">
                         {selectedBank ? (
                             <>
                                 {selectedBank.bankName}
@@ -47,9 +47,13 @@ export function BankComboboxPopover({
                         )}
                     </Button>
                 </PopoverTrigger>
-                <PopoverContent className="p-0" side="bottom" align="start">
+                <PopoverContent className="p-0 w-[400px]" side="bottom" align="start">
                     <Command shouldFilter={false}>
-                        <CommandInput value={query} onValueChange={setQuery} />
+                        <CommandInput
+                            placeholder="銀行名・銀行コード・SWIFTコードのいずれかを入力"
+                            value={query}
+                            onValueChange={setQuery}
+                        />
                         <CommandList>
                             {isFetching ? (
                                 <CommandEmpty>
