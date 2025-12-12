@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-export function Header() {
+export function Header({ showLogout = true }: { showLogout?: boolean }) {
     const router = useRouter();
 
     const handleLogout = () => {
@@ -16,12 +16,14 @@ export function Header() {
             <div className="container flex items-center justify-between mx-auto px-6">
                 <h1 className="text-lg font-semibold">BANK SELECT APP</h1>
 
-                <button
-                    onClick={handleLogout}
-                    className="text-sm px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
-                >
-                    ログアウト
-                </button>
+                {showLogout && (
+                    <button
+                        onClick={handleLogout}
+                        className="text-sm px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                    >
+                        ログアウト
+                    </button>
+                )}
             </div>
         </header>
     );
