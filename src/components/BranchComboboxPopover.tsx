@@ -9,6 +9,7 @@ import {
     CommandInput, CommandList, CommandGroup, CommandItem, CommandEmpty, Command
 } from "@/components/ui/command";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import {useTranslation} from "react-i18next";
 
 export function BranchComboboxPopover({
                                           selectedBank,
@@ -19,6 +20,7 @@ export function BranchComboboxPopover({
     selectedBranch: Branch | null;
     setSelectedBranch: (branch: Branch | null) => void;
 }) {
+    const { t } = useTranslation();
     const [open, setOpen] = useState(false);
     const [branches, setBranches] = useState<Branch[]>([]);
     const [query, setQuery] = useState("");
@@ -67,7 +69,7 @@ export function BranchComboboxPopover({
 
     return (
         <div className="flex flex-col space-y-2">
-            <p className="text-muted-foreground text-sm">支店名</p>
+            <p className="text-muted-foreground text-sm">{t("branchName")}</p>
 
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
@@ -84,7 +86,7 @@ export function BranchComboboxPopover({
                                 </span>
                             </>
                         ) : (
-                            <>未入力</>
+                            <>{t("notSet")}</>
                         )}
                     </Button>
                 </PopoverTrigger>
@@ -92,7 +94,7 @@ export function BranchComboboxPopover({
                 <PopoverContent className="p-0 w-[400px]" side="bottom" align="start">
                     <Command shouldFilter={false}>
                         <CommandInput
-                            placeholder="支店名・支店コードのいずれかを入力"
+                            placeholder={t("branchPlaceholder")}
                             value={query}
                             onValueChange={(v) =>　{
                                 setQuery(v);
@@ -102,12 +104,12 @@ export function BranchComboboxPopover({
                         <CommandList>
                             {isFetching ? (
                                 <CommandEmpty>
-                                    検索中...
+                                    {t("searching")}
                                     <span className="ml-2 animate-spin inline-block w-4 h-4 border-2 border-t-transparent rounded-full border-current"></span>
                                 </CommandEmpty>
                             ) : (
                                 <>
-                                    <CommandEmpty>該当する支店がありません。</CommandEmpty>
+                                    <CommandEmpty>{t("branchNoResultsFound")}</CommandEmpty>
                                     <CommandGroup>
                                         {branches.map((branch) => (
                                             <CommandItem

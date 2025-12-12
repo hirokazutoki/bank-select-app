@@ -1,11 +1,10 @@
-import * as React from "react"
+"use client";
+
 import { useRouter } from "next/navigation";
-import {
-    Menu,
-    Languages,
-    LogOut,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { useTranslation } from "react-i18next";
+import { Menu, Languages, LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -17,87 +16,60 @@ import {
     DropdownMenuSubContent,
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from "@/components/ui/dropdown-menu";
 
 export function HamburgerMenu() {
     const router = useRouter();
-    const [language, setLanguage] = React.useState("ja")
-    const [openLogoutDialog, setOpenLogoutDialog] = React.useState(false);
+    const { t, i18n } = useTranslation();
+    const lang = i18n.language;
 
     const handleLogout = () => {
-        // ここにログアウト処理を書く
-        console.log("logout!");
         router.push("/login");
     };
 
+    const changeLang = (value: string) => {
+        i18n.changeLanguage(value);
+    };
+
     return (
-        <>
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon-lg" aria-label="More Options">
-                        <Menu />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-52">
-                    <DropdownMenuGroup>
-                        <DropdownMenuSub>
-                            <DropdownMenuSubTrigger>
-                                <Languages />
-                                言語
-                            </DropdownMenuSubTrigger>
-                            <DropdownMenuSubContent>
-                                <DropdownMenuRadioGroup
-                                    value={language}
-                                    onValueChange={setLanguage}
-                                >
-                                    <DropdownMenuRadioItem value="en">
-                                        English
-                                    </DropdownMenuRadioItem>
-                                    <DropdownMenuRadioItem value="ja">
-                                        日本語
-                                    </DropdownMenuRadioItem>
-                                </DropdownMenuRadioGroup>
-                            </DropdownMenuSubContent>
-                        </DropdownMenuSub>
-                        <DropdownMenuItem
-                            variant="destructive"
-                            onClick={() => setOpenLogoutDialog(true)}
-                        >
-                            <LogOut />
-                            ログアウト
-                        </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                </DropdownMenuContent>
-            </DropdownMenu>
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon-lg">
+                    <Menu />
+                </Button>
+            </DropdownMenuTrigger>
 
-            {/* AlertDialog */}
-            <AlertDialog open={openLogoutDialog} onOpenChange={setOpenLogoutDialog}>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>ログアウトしますか？</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            現在のセッションが終了し、ログイン画面に移動します。
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
+            <DropdownMenuContent align="end" className="w-52">
+                <DropdownMenuGroup>
 
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>キャンセル</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleLogout} className='font-bold'>
-                            ログアウト
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
-        </>
-    )
+                    <DropdownMenuSub>
+                        <DropdownMenuSubTrigger>
+                            <Languages />
+                            {t("languages")}
+                        </DropdownMenuSubTrigger>
+
+                        <DropdownMenuSubContent>
+                            <DropdownMenuRadioGroup
+                                value={lang}
+                                onValueChange={changeLang}
+                            >
+                                <DropdownMenuRadioItem value="en">
+                                    {t("english")}
+                                </DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem value="ja">
+                                    {t("japanese")}
+                                </DropdownMenuRadioItem>
+                            </DropdownMenuRadioGroup>
+                        </DropdownMenuSubContent>
+                    </DropdownMenuSub>
+
+                    <DropdownMenuItem variant="destructive" onClick={handleLogout}>
+                        <LogOut />
+                        {t("logout")}
+                    </DropdownMenuItem>
+
+                </DropdownMenuGroup>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
 }

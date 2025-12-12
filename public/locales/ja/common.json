@@ -1,0 +1,17 @@
+{
+  "languages": "言語",
+  "logout": "ログアウト",
+  "english": "English",
+  "japanese": "日本語",
+  "searching": "検索中...",
+  "bankName": "金融機関名",
+  "bankPlaceholder": "銀行名・銀行コード・SWIFTコードのいずれかを入力",
+  "bankNoResultsFound": "該当する金融機関がありません。",
+  "branchName": "支店名",
+  "branchPlaceholder": "支店名・支店コードのいずれかを入力",
+  "branchNoResultsFound": "該当する支店がありません。",
+  "notSet": "未入力",
+  "check": "確認",
+  "reset": "リセット",
+  "validationError": "銀行と支店の両方を選択してください"
+}

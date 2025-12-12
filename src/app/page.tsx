@@ -8,8 +8,10 @@ import { Bank } from "@/types/bank";
 import { Branch } from "@/types/branch";
 import { Button } from "@/components/ui/button"
 import { subscribeApiCallCount, getApiCallCount } from "@/lib/apiCounter";
+import {useTranslation} from "react-i18next";
 
 export default function Home() {
+    const { t } = useTranslation();
     const [selectedBank, setSelectedBank] = React.useState<Bank | null>(null)
     const [selectedBranch, setSelectedBranch] = React.useState<Branch | null>(null)
     const [apiCallCount, setApiCallCount] = React.useState(0);
@@ -40,7 +42,7 @@ export default function Home() {
                 }, null, 2)
             alert(json)
         } else {
-            alert("銀行と支店が選択されていません")
+            alert(t("validationError"))
         }
     }
 
@@ -103,7 +105,7 @@ export default function Home() {
                             className="w-full sm:flex-[0.8] justify-center font-bold"
                             onClick={handleCheck}
                         >
-                            確認
+                            {t("check")}
                         </Button>
 
                         <Button
@@ -111,7 +113,7 @@ export default function Home() {
                             className="w-full sm:flex-[0.2] justify-center"
                             onClick={handleReset}
                         >
-                            リセット
+                            {t("reset")}
                         </Button>
                     </div>
 
