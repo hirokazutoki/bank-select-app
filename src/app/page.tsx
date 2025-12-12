@@ -34,6 +34,11 @@ export default function Home() {
         }
     }
 
+    async function handleReset() {
+        setSelectedBank(null)
+        setSelectedBranch(null)
+    }
+
     return (
         <>
             <Header />
@@ -49,10 +54,17 @@ export default function Home() {
                         selectedBank={selectedBank}
                     />
                     <button
-                        className="btn btn-blue border px-4 py-2 rounded w-full"
+                        className="btn btn-blue border px-4 py-2 rounded w-full mt-4"
                         onClick={handleCheck}
                     >
                         確認
+                    </button>
+
+                    <button
+                        className="btn btn-white border px-4 py-1 rounded w-full mt-0"
+                        onClick={handleReset}
+                    >
+                        リセット
                     </button>
                 </main>
             </div>
