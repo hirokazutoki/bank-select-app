@@ -10,18 +10,23 @@ import {
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 
 export function BankComboboxPopover({
-    selectedBank,
-    setSelectedBank,
-}: {
+                                        selectedBank,
+                                        setSelectedBank,
+                                    }: {
     selectedBank: Bank | null;
     setSelectedBank: (bank: Bank | null) => void;
 }) {
     const [open, setOpen] = useState(false);
     const [banks, setBanks] = useState<Bank[]>([]);
     const [query, setQuery] = useState("");
+    const [isFetching, setIsFetching] = useState(false);
 
     useEffect(() => {
-        fetchBanks(query).then(setBanks).catch(console.error);
+        setIsFetching(true);
+        fetchBanks(query)
+            .then(setBanks)
+            .catch(console.error)
+            .finally(() => setIsFetching(false));
     }, [query]);
 
     return (
@@ -46,24 +51,33 @@ export function BankComboboxPopover({
                     <Command shouldFilter={false}>
                         <CommandInput value={query} onValueChange={setQuery} />
                         <CommandList>
-                            <CommandEmpty>該当する金融機関がありません。</CommandEmpty>
-                            <CommandGroup>
-                                {banks.map((bank) => (
-                                    <CommandItem
-                                        key={bank.bankCode}
-                                        value={bank.bankName}
-                                        onSelect={() => {
-                                            setSelectedBank(bank);
-                                            setOpen(false);
-                                        }}
-                                    >
-                                        {bank.bankName}
-                                        <span className="text-muted-foreground text-xs">
-                                          （{bank.bankCode}）
-                                        </span>
-                                    </CommandItem>
-                                ))}
-                            </CommandGroup>
+                            {isFetching ? (
+                                <CommandEmpty>
+                                    検索中...
+                                    <span className="ml-2 animate-spin inline-block w-4 h-4 border-2 border-t-transparent rounded-full border-current"></span>
+                                </CommandEmpty>
+                            ) : (
+                                <>
+                                    <CommandEmpty>該当する金融機関がありません。</CommandEmpty>
+                                    <CommandGroup>
+                                        {banks.map((bank) => (
+                                            <CommandItem
+                                                key={bank.bankCode}
+                                                value={bank.bankName}
+                                                onSelect={() => {
+                                                    setSelectedBank(bank);
+                                                    setOpen(false);
+                                                }}
+                                            >
+                                                {bank.bankName}
+                                                <span className="text-muted-foreground text-xs">
+                                                  （{bank.bankCode}）
+                                                </span>
+                                            </CommandItem>
+                                        ))}
+                                    </CommandGroup>
+                                </>
+                            )}
                         </CommandList>
                     </Command>
                 </PopoverContent>

@@ -22,6 +22,7 @@ export function BranchComboboxPopover({
     const [open, setOpen] = useState(false);
     const [branches, setBranches] = useState<Branch[]>([]);
     const [query, setQuery] = useState("");
+    const [isFetching, setIsFetching] = useState(false);
 
     // 銀行が選ばれていない → 支店入力を無効化する
     const disabled = !selectedBank;
@@ -32,9 +33,11 @@ export function BranchComboboxPopover({
             return;
         }
 
+        setIsFetching(true);
         fetchBranches(selectedBank.bankCode, query)
             .then(setBranches)
-            .catch(console.error);
+            .catch(console.error)
+            .finally(() => setIsFetching(false));
     }, [selectedBank, query]);
 
     return (
@@ -69,24 +72,33 @@ export function BranchComboboxPopover({
                             onValueChange={setQuery}
                         />
                         <CommandList>
-                            <CommandEmpty>該当する支店がありません。</CommandEmpty>
-                            <CommandGroup>
-                                {branches.map((branch) => (
-                                    <CommandItem
-                                        key={`${branch.branchCode}-${branch.sortOrder}`}
-                                        value={`${branch.branchCode} ${branch.branchName}`}
-                                        onSelect={() => {
-                                            setSelectedBranch(branch);
-                                            setOpen(false);
-                                        }}
-                                    >
-                                        {branch.branchName}
-                                        <span className="text-muted-foreground text-xs">
-                                          （{branch.branchCode}）
-                                        </span>
-                                    </CommandItem>
-                                ))}
-                            </CommandGroup>
+                            {isFetching ? (
+                                <CommandEmpty>
+                                    検索中...
+                                    <span className="ml-2 animate-spin inline-block w-4 h-4 border-2 border-t-transparent rounded-full border-current"></span>
+                                </CommandEmpty>
+                            ) : (
+                                <>
+                                    <CommandEmpty>該当する支店がありません。</CommandEmpty>
+                                    <CommandGroup>
+                                        {branches.map((branch) => (
+                                            <CommandItem
+                                                key={`${branch.branchCode}-${branch.sortOrder}`}
+                                                value={`${branch.branchCode} ${branch.branchName}`}
+                                                onSelect={() => {
+                                                    setSelectedBranch(branch);
+                                                    setOpen(false);
+                                                }}
+                                            >
+                                                {branch.branchName}
+                                                <span className="text-muted-foreground text-xs">
+                                                  （{branch.branchCode}）
+                                                </span>
+                                            </CommandItem>
+                                        ))}
+                                    </CommandGroup>
+                                </>
+                            )}
                         </CommandList>
                     </Command>
                 </PopoverContent>
