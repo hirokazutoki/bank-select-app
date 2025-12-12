@@ -11,10 +11,10 @@ import {
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 
 export function BranchComboboxPopover({
-  selectedBank,
-  selectedBranch,
-  setSelectedBranch,
-}: {
+                                          selectedBank,
+                                          selectedBranch,
+                                          setSelectedBranch,
+                                      }: {
     selectedBank: Bank | null;
     selectedBranch: Branch | null;
     setSelectedBranch: (branch: Branch | null) => void;
@@ -22,10 +22,22 @@ export function BranchComboboxPopover({
     const [open, setOpen] = useState(false);
     const [branches, setBranches] = useState<Branch[]>([]);
     const [query, setQuery] = useState("");
+    const [debouncedQuery, setDebouncedQuery] = useState("")
     const [isFetching, setIsFetching] = useState(false);
+
+    const DEBOUNCE_MS = Number(process.env.NEXT_PUBLIC_DEBOUNCE_MS ?? 300);
 
     // 銀行が選ばれていない → 支店入力を無効化する
     const disabled = !selectedBank;
+
+    // debounce: query が変わったら DEBOUNCE_MS 待って debouncedQuery に反映
+    useEffect(() => {
+        const id = setTimeout(() => {
+            setDebouncedQuery(query);
+        }, DEBOUNCE_MS);
+
+        return () => clearTimeout(id);
+    }, [query, DEBOUNCE_MS]);
 
     useEffect(() => {
         if (!selectedBank) {
@@ -33,12 +45,17 @@ export function BranchComboboxPopover({
             return;
         }
 
+        if (!debouncedQuery.trim()) {
+            setBranches([]);
+            return;
+        }
+
         setIsFetching(true);
-        fetchBranches(selectedBank.bankCode, query)
+        fetchBranches(selectedBank.bankCode, debouncedQuery)
             .then(setBranches)
             .catch(console.error)
             .finally(() => setIsFetching(false));
-    }, [selectedBank, query]);
+    }, [selectedBank, debouncedQuery]);
 
     return (
         <div className="flex flex-col space-y-2">
@@ -69,7 +86,10 @@ export function BranchComboboxPopover({
                         <CommandInput
                             placeholder="支店名・支店コードのいずれかを入力"
                             value={query}
-                            onValueChange={setQuery}
+                            onValueChange={(v) =>　{
+                                setQuery(v);
+                                setIsFetching(true);
+                            }}
                         />
                         <CommandList>
                             {isFetching ? (

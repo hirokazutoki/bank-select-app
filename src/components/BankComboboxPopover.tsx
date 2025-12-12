@@ -19,15 +19,32 @@ export function BankComboboxPopover({
     const [open, setOpen] = useState(false);
     const [banks, setBanks] = useState<Bank[]>([]);
     const [query, setQuery] = useState("");
+    const [debouncedQuery, setDebouncedQuery] = useState("")
     const [isFetching, setIsFetching] = useState(false);
 
+    const DEBOUNCE_MS = Number(process.env.NEXT_PUBLIC_DEBOUNCE_MS ?? 300);
+
+    // debounce: query が変わったら DEBOUNCE_MS 待って debouncedQuery に反映
     useEffect(() => {
+        const id = setTimeout(() => {
+            setDebouncedQuery(query);
+        }, DEBOUNCE_MS);
+
+        return () => clearTimeout(id);
+    }, [query, DEBOUNCE_MS]);
+
+    useEffect(() => {
+        if (!debouncedQuery.trim()) {
+            setBanks([]);
+            return;
+        }
+
         setIsFetching(true);
-        fetchBanks(query)
+        fetchBanks(debouncedQuery)
             .then(setBanks)
             .catch(console.error)
             .finally(() => setIsFetching(false));
-    }, [query]);
+    }, [debouncedQuery]);
 
     return (
         <div className="flex flex-col space-y-2">
@@ -52,7 +69,10 @@ export function BankComboboxPopover({
                         <CommandInput
                             placeholder="銀行名・銀行コード・SWIFTコードのいずれかを入力"
                             value={query}
-                            onValueChange={setQuery}
+                            onValueChange={(v) =>　{
+                                setQuery(v);
+                                setIsFetching(true);
+                            }}
                         />
                         <CommandList>
                             {isFetching ? (
