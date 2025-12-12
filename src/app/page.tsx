@@ -97,19 +97,23 @@ export default function Home() {
                         setSelectedBranch={setSelectedBranch}
                         selectedBank={selectedBank}
                     />
-                    <button
-                        className="btn btn-blue border px-4 py-2 rounded w-full mt-4"
-                        onClick={handleCheck}
-                    >
-                        確認
-                    </button>
+                    <div className="flex flex-col w-full max-w-[400px] gap-2 sm:flex-row">
+                        <Button
+                            variant="default"
+                            className="w-full sm:flex-[0.8] justify-center font-bold"
+                            onClick={handleCheck}
+                        >
+                            確認
+                        </Button>
 
-                    <button
-                        className="btn btn-white text-gray-600 border px-4 py-1 rounded w-full mt-0"
-                        onClick={handleReset}
-                    >
-                        リセット
-                    </button>
+                        <Button
+                            variant="outline"
+                            className="w-full sm:flex-[0.2] justify-center"
+                            onClick={handleReset}
+                        >
+                            リセット
+                        </Button>
+                    </div>
 
                     <div>API Call Count : {apiCallCount}</div>
                 </main>
