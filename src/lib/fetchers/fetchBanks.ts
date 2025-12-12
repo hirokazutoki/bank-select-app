@@ -20,7 +20,6 @@ export async function fetchBanks(query: string): Promise<Bank[]> {
         const data: RawBank[] = await res.json();
 
         return data.map((b) => ({
-            swiftCode: b.swift_code,
             bankName: b.bank_name,
             bankCode: b.bank_code,
         }));

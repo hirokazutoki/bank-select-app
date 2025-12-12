@@ -28,6 +28,7 @@ export async function fetchBranches(bankCode: string, query: string): Promise<Br
             postCode: b.post_code,
             address: b.address,
             sortOrder: b.sort_order,
+            swiftCode: b.swift_code,
         }))
     } catch (err) {
         console.error("支店データの取得に失敗しました", err)

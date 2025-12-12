@@ -1,4 +1,5 @@
 export type RawBranch = {
+    swift_code: string
     branch_name: string
     branch_code: string
     address: string
@@ -7,6 +8,7 @@ export type RawBranch = {
 }
 
 export type Branch = {
+    swiftCode: string
     branchName: string
     branchCode: string
     postCode: string

@@ -6,6 +6,7 @@ import { BankComboboxPopover } from "@/components/BankComboboxPopover";
 import { BranchComboboxPopover } from "@/components/BranchComboboxPopover";
 import { Bank } from "@/types/bank";
 import { Branch } from "@/types/branch";
+import { Button } from "@/components/ui/button"
 import { subscribeApiCallCount, getApiCallCount } from "@/lib/apiCounter";
 
 export default function Home() {
@@ -31,7 +32,7 @@ export default function Home() {
                 {
                     bank_name: selectedBank.bankName,
                     bank_code: selectedBank.bankCode,
-                    swift_code: selectedBank.swiftCode,
+                    swift_code: selectedBranch.swiftCode,
                     branch_code: selectedBranch.branchCode,
                     branch_name: selectedBranch.branchName,
                     post_code: selectedBranch.postCode,
@@ -57,6 +58,40 @@ export default function Home() {
                         selectedBank={selectedBank}
                         setSelectedBank={setSelectedBank}
                     />
+                    <div className="grid grid-cols-2 gap-3 w-full max-w-[400px]">
+                        <Button variant="outline" onClick={() => setSelectedBank({
+                            bankName: "みずほ銀行",
+                            bankCode: "0001",
+                        })}>みずほ銀行</Button>
+                        <Button variant="outline" onClick={() => setSelectedBank({
+                            bankName: "三井住友銀行",
+                            bankCode: "0009",
+                        })}>三井住友銀行</Button>
+                        <Button variant="outline" onClick={() => setSelectedBank({
+                            bankName: "三菱UFJ銀行",
+                            bankCode: "0005",
+                        })}>三菱UFJ銀行</Button>
+                        <Button variant="outline" onClick={() => setSelectedBank({
+                            bankName: "りそな銀行",
+                            bankCode: "0010",
+                        })}>りそな銀行</Button>
+                        <Button variant="outline" onClick={() => setSelectedBank({
+                            bankName: "ゆうちょ銀行",
+                            bankCode: "9900",
+                        })}>ゆうちょ銀行</Button>
+                        <Button variant="outline" onClick={() => setSelectedBank({
+                            bankName: "楽天銀行",
+                            bankCode: "0036",
+                        })}>楽天銀行</Button>
+                        <Button variant="outline" onClick={() => setSelectedBank({
+                            bankName: "住信SBI銀行",
+                            bankCode: "0038",
+                        })}>住信SBI銀行</Button>
+                        <Button variant="outline" onClick={() => setSelectedBank({
+                            bankName: "PayPay銀行",
+                            bankCode: "0033",
+                        })}>PayPay銀行</Button>
+                    </div>
                     <BranchComboboxPopover
                         selectedBranch={selectedBranch}
                         setSelectedBranch={setSelectedBranch}
