@@ -1,35 +1,43 @@
 "use client";
 
-import {useState} from "react";
-import {Header} from "@/components/Header";
-import * as React from "react";
+import { useState } from "react";
+import { Header } from "@/components/Header";
+import { LoginForm } from "@/components/login-form";
 
 export default function Home() {
-    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
     async function handleLogin() {
         const res = await fetch("/api/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password }),
+            body: JSON.stringify({ email, password }),
         });
-        if (res.ok) {
+
+        const data = await res.json();
+
+        if (data.ok) {
             location.href = "/";
         } else {
             alert("Failed to login");
         }
     }
 
+
     return (
         <>
-            <Header showLogout={false}  />
-            <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-                <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-                    <input value={username} onChange={e => setUsername(e.target.value)} placeholder="メールアドレス" />
-                    <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="パスワード" />
-                    <button className="btn btn-blue" onClick={handleLogin}>ログイン</button>
-                </main>
+            <Header showLogout={false} />
+            <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+                <div className="w-full max-w-sm">
+                    <LoginForm
+                        email={email}
+                        password={password}
+                        onChangeEmail={setEmail}
+                        onChangePassword={setPassword}
+                        onSubmit={handleLogin}
+                    />
+                </div>
             </div>
         </>
     );
