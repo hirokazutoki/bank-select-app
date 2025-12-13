@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
     Card,
@@ -12,6 +13,7 @@ import {
     FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import {Eye, EyeOff, Menu} from "lucide-react";
 
 type LoginFormProps = {
     email: string
@@ -28,6 +30,8 @@ export function LoginForm({
                               onChangePassword,
                               onSubmit,
                           }: LoginFormProps) {
+    const [showPassword, setShowPassword] = useState(false)
+
     return (
         <Card>
             <CardHeader>
@@ -51,7 +55,7 @@ export function LoginForm({
                             <Input
                                 id="email"
                                 type="email"
-                                placeholder="m@example.com"
+                                autoFocus
                                 required
                                 value={email}
                                 onChange={(e) => onChangeEmail(e.target.value)}
@@ -60,13 +64,24 @@ export function LoginForm({
 
                         <Field>
                             <FieldLabel htmlFor="password">Password</FieldLabel>
-                            <Input
-                                id="password"
-                                type="password"
-                                required
-                                value={password}
-                                onChange={(e) => onChangePassword(e.target.value)}
-                            />
+
+                            <div className="relative">
+                                <Input
+                                    id="password"
+                                    type={showPassword ? "text" : "password"}
+                                    required
+                                    value={password}
+                                    onChange={(e) => onChangePassword(e.target.value)}
+                                />
+
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(v => !v)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground"
+                                >
+                                    {showPassword ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                                </button>
+                            </div>
                         </Field>
 
                         <Field>
