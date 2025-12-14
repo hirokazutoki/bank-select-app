@@ -50,13 +50,9 @@ export function BranchComboboxPopover({
     }, [query, DEBOUNCE_MS]);
 
     useEffect(() => {
-        if (!selectedBank) {
+        if (!selectedBank || !debouncedQuery.trim()) {
             setBranches([]);
-            return;
-        }
-
-        if (!debouncedQuery.trim()) {
-            setBranches([]);
+            setIsFetching(false);
             return;
         }
 

@@ -38,6 +38,7 @@ export function BankComboboxPopover({
     useEffect(() => {
         if (!debouncedQuery.trim()) {
             setBanks([]);
+            setIsFetching(false);
             return;
         }
 
