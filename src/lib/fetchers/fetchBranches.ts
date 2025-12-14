@@ -22,13 +22,23 @@ export async function fetchBranches(bankCode: string, query: string): Promise<Br
 
         const data: RawBranch[] | [] = await res.json();
 
+        console.log(data)
+
         return data.map((b) => ({
-            branchName: b.branch_name,
+            bankCode: b.bank_code,
+            swiftCode: b.swift_code,
+            bankName: b.bank_name,
+            bankNameHiragana: b.bank_name_hiragana,
+            bankNameKatakana: b.bank_name_katakana,
+            bankNameHepburn: b.bank_name_hepburn,
             branchCode: b.branch_code,
-            postCode: b.post_code,
+            branchName: b.branch_name,
+            branchNameHiragana: b.branch_name_hiragana,
+            branchNameKatakana: b.branch_name_katakana,
+            branchNameHepburn: b.branch_name_hepburn,
+            postalCode: b.postal_code,
             address: b.address,
             sortOrder: b.sort_order,
-            swiftCode: b.swift_code,
         }))
     } catch (err) {
         console.error("支店データの取得に失敗しました", err)

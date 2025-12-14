@@ -32,13 +32,20 @@ export default function Home() {
         if (selectedBank && selectedBranch) {
             const json = JSON.stringify(
                 {
-                    bank_name: selectedBank.bankName,
-                    bank_code: selectedBank.bankCode,
+                    bank_code: selectedBranch.bankCode,
                     swift_code: selectedBranch.swiftCode,
+                    bank_name: selectedBranch.bankName,
+                    bank_name_hiragana: selectedBranch.bankNameHiragana,
+                    bank_name_katakana: selectedBranch.bankNameKatakana,
+                    bank_name_hepburn: selectedBranch.bankNameHepburn,
                     branch_code: selectedBranch.branchCode,
                     branch_name: selectedBranch.branchName,
-                    post_code: selectedBranch.postCode,
+                    branch_name_hiragana: selectedBranch.branchNameHiragana,
+                    branch_name_katakana: selectedBranch.branchNameKatakana,
+                    branch_name_hepburn: selectedBranch.branchNameHepburn,
+                    postal_code: selectedBranch.postalCode,
                     address: selectedBranch.address,
+                    sort_order: selectedBranch.sortOrder
                 }, null, 2)
             alert(json)
         } else {
