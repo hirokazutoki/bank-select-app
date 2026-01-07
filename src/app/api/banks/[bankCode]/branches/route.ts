@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 
 export async function GET(
     req: Request,
-    { params }: { params: { bankCode: string } }
+    { params }: { params: Promise<{ bankCode: string }> }
 ) {
-    const { bankCode } = params;
+    const { bankCode } = await params;
     const { searchParams } = new URL(req.url);
 
     const branchCode = searchParams.get("branch_code") ?? "";
