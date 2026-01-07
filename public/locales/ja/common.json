@@ -5,7 +5,7 @@
   "japanese": "日本語",
   "searching": "検索中...",
   "bankName": "金融機関名",
-  "bankPlaceholder": "銀行名・銀行コード・SWIFTコードのいずれかを入力",
+  "bankPlaceholder": "銀行名・銀行コードのいずれかを入力",
   "bankNoResultsFound": "該当する金融機関がありません。",
   "branchName": "支店名",
   "branchPlaceholder": "支店名・支店コードのいずれかを入力",

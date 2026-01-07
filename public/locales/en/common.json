@@ -5,7 +5,7 @@
   "japanese": "日本語",
   "searching": "Searching ...",
   "bankName": "Bank Name",
-  "bankPlaceholder": "Enter either bank_name, bank_code, or swift_code.",
+  "bankPlaceholder": "Enter either bank_name, or bank_code.",
   "bankNoResultsFound": "No results found.",
   "branchName": "Branch Name",
   "branchPlaceholder": "Enter either branch_name, or branch_code.",
