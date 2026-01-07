@@ -15,6 +15,18 @@ export async function GET(req: Request) {
         }
     );
 
-    const json = await res.json();
-    return NextResponse.json(json);
+    const body = await res.json().catch(() => null);
+
+    if (!res.ok) {
+        return NextResponse.json(
+            {
+                message: "External API error",
+                status: res.status,
+                body,
+            },
+            { status: res.status }
+        );
+    }
+
+    return NextResponse.json(body);
 }

@@ -24,6 +24,18 @@ export async function GET(
         }
     );
 
-    const data = await res.json();
-    return NextResponse.json(data);
+    const body = await res.json().catch(() => null);
+
+    if (!res.ok) {
+        return NextResponse.json(
+            {
+                message: "External API error",
+                status: res.status,
+                body,
+            },
+            { status: res.status }
+        );
+    }
+
+    return NextResponse.json(body);
 }

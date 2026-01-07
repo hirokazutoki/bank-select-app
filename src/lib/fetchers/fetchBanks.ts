@@ -17,7 +17,18 @@ export async function fetchBanks(query: string): Promise<Bank[]> {
     try {
         incrementApiCall();
         const res = await fetch(`/api/banks?${queryParams}`, { cache: "no-store" });
+
+        if (!res.ok) {
+            const errorBody = await res.json().catch(() => null);
+
+            alert(errorBody?.message ?? "Something went wrong.");
+
+            return [];
+        }
+
         const data: RawBank[] = await res.json();
+
+        console.log(data)
 
         return data.map((b) => ({
             bankName: b.bank_name,

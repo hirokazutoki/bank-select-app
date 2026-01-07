@@ -20,6 +20,14 @@ export async function fetchBranches(bankCode: string, query: string): Promise<Br
             `/api/banks/${bankCode}/branches?${queryParams}`, { cache: "no-store" }
         );
 
+        if (!res.ok) {
+            const errorBody = await res.json().catch(() => null);
+
+            alert(errorBody?.message ?? "Something went wrong.");
+
+            return [];
+        }
+
         const data: RawBranch[] | [] = await res.json();
 
         console.log(data)
