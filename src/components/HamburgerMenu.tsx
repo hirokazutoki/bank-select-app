@@ -23,8 +23,9 @@ export function HamburgerMenu() {
     const { t, i18n } = useTranslation();
     const lang = i18n.language;
 
-    const handleLogout = () => {
-        router.push("/login");
+    const handleLogout = async () => {
+        await fetch("/api/logout", { method: "POST" });
+        router.replace("/login");
     };
 
     const changeLang = (value: string) => {
