@@ -62,7 +62,7 @@ export default function Home() {
     return (
         <>
             <Header />
-            <main className="flex flex-1 items-center justify-center px-6">
+            <main className="flex flex-1 items-center justify-center p-6">
                 <div>
                     <div className="text-gray-500 mb-3">
                         API Call Count :
