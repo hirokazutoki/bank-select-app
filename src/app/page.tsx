@@ -62,13 +62,13 @@ export default function Home() {
     return (
         <>
             <Header />
-            <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-                <main className="flex flex-col row-start-2 items-center sm:items-start">
+            <main className="flex flex-1 items-center justify-center px-6">
+                <div>
                     <div className="text-gray-500 mb-3">
                         API Call Count :
                         <span className="font-bold ps-2">{apiCallCount}</span>
                     </div>
-                    <Card className="w-full p-8">
+                    <Card className="w-full max-w-xl p-8">
                         <BankComboboxPopover
                             selectedBank={selectedBank}
                             setSelectedBank={setSelectedBank}
@@ -130,8 +130,8 @@ export default function Home() {
                             </Button>
                         </div>
                     </Card>
-                </main>
-            </div>
+                </div>
+            </main>
         </>
     )
 }
